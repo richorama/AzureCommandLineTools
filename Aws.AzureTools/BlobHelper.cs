@@ -54,7 +54,7 @@ namespace Aws.AzureTools
         public void GetBlob(string containerName, string blobName, string filename)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+            CloudBlob blob = container.GetBlobReference(blobName);
 
             blob.DownloadToFile(filename);
         }
@@ -64,8 +64,8 @@ namespace Aws.AzureTools
             CloudBlobContainer container1 = cloudBlobClient.GetContainerReference(containerName1);
             CloudBlobContainer container2 = cloudBlobClient.GetContainerReference(containerName2);
 
-            CloudBlockBlob blob1 = container1.GetBlockBlobReference(blobName1);
-            CloudBlockBlob blob2 = container1.GetBlockBlobReference(blobName2);
+            CloudBlob blob1 = container1.GetBlobReference(blobName1);
+            CloudBlob blob2 = container1.GetBlobReference(blobName2);
 
             blob2.CopyFromBlob(blob1);
         }
@@ -73,7 +73,7 @@ namespace Aws.AzureTools
         public void DeleteBlob(string containerName, string blobName)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+            CloudBlob blob = container.GetBlobReference(blobName);
 
             blob.Delete();
         }
@@ -81,15 +81,13 @@ namespace Aws.AzureTools
         public void PutBlob(string filename, string containerName, string blobName)
         {
            
-
- 
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
 
             container.CreateIfNotExist();
 
             Trace.TraceInformation("UploadingBlob..");
 
-            container.GetBlockBlobReference(blobName).UploadFile(filename);
+            container.GetBlobReference(blobName).UploadFile(filename);
             Trace.TraceInformation("Done");
         }
 
