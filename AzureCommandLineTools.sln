@@ -18,11 +18,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{ACEAC470-A6A0-44C4-A74E-08DDE01A0392}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		dist\setup.bat = dist\setup.bat
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListTables", "ListTables\ListTables.csproj", "{C1C35638-7ECB-4D7C-8C15-8AEC9BAE79E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListQueues", "ListQueues\ListQueues.csproj", "{F8811D90-7515-41CA-82FD-9C55C8CCBC35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceConsole", "TraceConsole\TraceConsole.csproj", "{E592CAAA-1023-487F-A63C-C40DBF7C310D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +127,16 @@ Global
 		{F8811D90-7515-41CA-82FD-9C55C8CCBC35}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F8811D90-7515-41CA-82FD-9C55C8CCBC35}.Release|x86.ActiveCfg = Release|x86
 		{F8811D90-7515-41CA-82FD-9C55C8CCBC35}.Release|x86.Build.0 = Release|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Debug|x86.ActiveCfg = Debug|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Debug|x86.Build.0 = Debug|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Release|Any CPU.ActiveCfg = Release|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Release|x86.ActiveCfg = Release|x86
+		{E592CAAA-1023-487F-A63C-C40DBF7C310D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
