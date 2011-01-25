@@ -41,5 +41,18 @@ namespace Aws.AzureTools
         {
             return cloudTableClient.ListTables();
         }
+
+
+        public void DeleteTable(string tableName)
+        {
+            this.cloudTableClient.DeleteTableIfExist(tableName);
+        }
+
+        public void CreateTable(string tableName)
+        {
+
+            this.cloudTableClient.CreateTableIfNotExist(tableName);
+        }
+
     }
 }

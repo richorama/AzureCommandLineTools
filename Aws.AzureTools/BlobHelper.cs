@@ -80,14 +80,18 @@ namespace Aws.AzureTools
 
         public void PutBlob(string filename, string containerName, string blobName)
         {
-           
+
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
 
             container.CreateIfNotExist();
 
             Trace.TraceInformation("UploadingBlob..");
 
-            container.GetBlobReference(blobName).UploadFile(filename);
+            CloudBlob b = container.GetBlobReference(blobName);
+
+            b.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
+
+            b.UploadFile(filename);
             Trace.TraceInformation("Done");
         }
 
@@ -96,8 +100,17 @@ namespace Aws.AzureTools
 
             CloudBlob b = cloudBlobClient.GetBlobReference(blobName);
 
+            b.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
+
             b.UploadFile(filename);
             Trace.TraceInformation("Done");
+        }
+
+        public void DeleteContainer(string containerName)
+        {
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+
+            container.Delete();
         }
 
         public static bool IsBlobReference(string s)

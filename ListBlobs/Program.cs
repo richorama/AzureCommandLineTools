@@ -35,7 +35,16 @@ namespace ListBlobs
                 BlobHelper blobHelper = new BlobHelper();
                 foreach (IListBlobItem blob in blobHelper.ListBlobs(containerName))
                 {
-                    Console.WriteLine(BlobHelper.Display(blob.Uri));
+                    CloudBlob cloudBlob = blob as CloudBlob;
+
+                    if (cloudBlob != null)
+                    {
+                        Console.WriteLine(String.Format("{0} {1}", BlobHelper.Display(blob.Uri), cloudBlob.Properties.LastModifiedUtc));
+                    }
+                    else
+                    {
+                        Console.WriteLine(BlobHelper.Display(blob.Uri));
+                    }
                 }
             }
 
@@ -46,7 +55,16 @@ namespace ListBlobs
                 {
                     foreach (IListBlobItem blob in container.ListBlobs())
                     {
-                        Console.WriteLine(BlobHelper.Display(blob.Uri));
+                        CloudBlob cloudBlob = blob as CloudBlob;
+
+                        if (cloudBlob != null)
+                        {
+                            Console.WriteLine(String.Format("{0} {1}", BlobHelper.Display(blob.Uri), cloudBlob.Properties.LastModifiedUtc));
+                        }
+                        else
+                        {
+                            Console.WriteLine(BlobHelper.Display(blob.Uri));
+                        }
                     }
                 }
             }
