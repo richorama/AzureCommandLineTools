@@ -59,6 +59,15 @@ namespace Aws.AzureTools
             blob.DownloadToFile(filename);
         }
 
+        public void TouchBlob(string containerName, string blobName)
+        {
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+            CloudBlob blob = container.GetBlobReference(blobName);
+
+            blob.FetchAttributes();
+            blob.SetProperties();
+        }
+
         public void CopyBlob(string containerName1, string blobName1, string containerName2, string blobName2)
         {
             CloudBlobContainer container1 = cloudBlobClient.GetContainerReference(containerName1);
