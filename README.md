@@ -1,7 +1,7 @@
 AzureCommandLineTools
 =====================
 
-Simple command line tools for interacting with Windows Azure Storage. A work in progress.
+Simple command line tools for interacting with Windows Azure. A work in progress.
 
 Before running these commands you need to set an environment variable with your azure storage configuration details. Most people will need something like this:
 
@@ -50,9 +50,17 @@ Examples
 
 	ListTables
 
+	CreateTable table
+
+	DeleteTable table
+
+	TouchBlob mycontainer/myblob
+
 	TraceConsole
+
+	Trace "Hello World"
 
 
 Rob Blackwell
 
-November 2010
+May 2011
