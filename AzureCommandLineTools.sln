@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trace", "Trace\Trace.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceListener", "TraceListener\TraceListener.csproj", "{33177822-3E02-47E6-A89D-A5692EF3AAD1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PutLargeBlob", "PutLargeBlob\PutLargeBlob.csproj", "{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,16 @@ Global
 		{33177822-3E02-47E6-A89D-A5692EF3AAD1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{33177822-3E02-47E6-A89D-A5692EF3AAD1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{33177822-3E02-47E6-A89D-A5692EF3AAD1}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Debug|x86.ActiveCfg = Debug|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Debug|x86.Build.0 = Debug|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Release|Any CPU.ActiveCfg = Release|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Release|x86.ActiveCfg = Release|x86
+		{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

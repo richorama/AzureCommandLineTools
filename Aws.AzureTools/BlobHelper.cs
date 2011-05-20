@@ -96,25 +96,57 @@ namespace Aws.AzureTools
 
             Trace.TraceInformation("UploadingBlob..");
 
-            CloudBlob b = container.GetBlobReference(blobName);
+            CloudBlob blob = container.GetBlobReference(blobName);
 
-            b.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
+            blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
 
-            b.UploadFile(filename);
+            blob.UploadFile(filename);
             Trace.TraceInformation("Done");
         }
 
         public void PutBlob(string filename, string blobName)
         {
+            CloudBlob blob = cloudBlobClient.GetBlobReference(blobName);
 
-            CloudBlob b = cloudBlobClient.GetBlobReference(blobName);
+            blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
 
-            b.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
-
-            b.UploadFile(filename);
+            blob.UploadFile(filename);
             Trace.TraceInformation("Done");
         }
 
+
+        public void PutLargeBlob(string filename, string containerName, string blobName)
+        {
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+            container.CreateIfNotExist();
+
+            cloudBlobClient.WriteBlockSizeInBytes = Settings.WriteBlockSizeInBytes();
+
+            Trace.TraceInformation("UploadingBlob..");
+
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+            blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
+
+            blob.ParallelUpload(filename, null);
+
+            Trace.TraceInformation("Done");
+        }
+
+        public void PutLargeBlob(string filename, string blobName)
+        {
+            cloudBlobClient.WriteBlockSizeInBytes = Settings.WriteBlockSizeInBytes();
+
+            Trace.TraceInformation("UploadingBlob..");
+
+            CloudBlockBlob blob = cloudBlobClient.GetBlockBlobReference(blobName);
+            blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
+
+            blob.ParallelUpload(filename, null);
+            
+            Trace.TraceInformation("Done");
+        }
+
+        
         public void DeleteContainer(string containerName)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);

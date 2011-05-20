@@ -70,5 +70,12 @@ namespace Aws.AzureTools
             return i;
         }
 
+        public static int WriteBlockSizeInBytes()
+        {
+            int blockSizeInMB = 4; // values 1 - 4
+            return (1024 * 1024 * blockSizeInMB);
+        }
+
+
     }
 }
