@@ -27,7 +27,7 @@ namespace CopyBlob
         {
             if (args.Length != 2)
             {
-                string usage = "Usage: CopyBlob container\blob container\blob";
+                string usage = @"Usage: CopyBlob container\blob container\blob";
                 Trace.TraceInformation(usage);
                 Console.WriteLine(usage);
                 return (Settings.SUCCESS);

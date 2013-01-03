@@ -18,7 +18,7 @@
 using System;
 using System.Diagnostics;
 using Aws.AzureTools;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace ListContainers
 {

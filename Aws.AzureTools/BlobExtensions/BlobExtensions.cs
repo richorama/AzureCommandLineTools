@@ -20,9 +20,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Microsoft.WindowsAzure.StorageClient;
 using System.Security.Cryptography;
 using System.Threading;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Aws.AzureTools
 {
@@ -37,8 +39,8 @@ namespace Aws.AzureTools
             {
                 options = new BlobRequestOptions()
                 {
-                    Timeout = blobRef.ServiceClient.Timeout,
-                    RetryPolicy = RetryPolicies.RetryExponential(RetryPolicies.DefaultClientRetryCount, RetryPolicies.DefaultClientBackoff)
+                    ServerTimeout = blobRef.ServiceClient.ServerTimeout,
+                    //RetryPolicy = new ExponentialRetry(Microsoft.WindowsAzure.Storage.RetryPolicies..DefaultClientBackoff, RetryPolicies.DefaultClientRetryCount)
                 };
             }
 
@@ -63,7 +65,7 @@ namespace Aws.AzureTools
             List<BlockInfo> blockInfoList = uploadInfo.BlockInfoList;
 
             // set stream position based on read uploadInfo
-            int blockSize = (int)blobRef.ServiceClient.WriteBlockSizeInBytes;
+            int blockSize = (int)blobRef.ServiceClient.SingleBlobUploadThresholdInBytes;
             bool moreToUpload = (sourceStream.Length - sourceStream.Position > 0);
             int currentBlockPossition = blockInfoList.Count;
 
@@ -129,7 +131,8 @@ namespace Aws.AzureTools
                         BlockInfo blockInfo = new BlockInfo { OrderPosition = currentBlockPossition++, BlockId = blockId };
                         blockInfoList.Add(blockInfo);
 
-                        IAsyncResult asyncresult = blobRef.BeginPutBlock(blockId, blockAsStream, null, options, null,
+                        ICancellableAsyncResult asyncresult = 
+                            blobRef.BeginPutBlock(blockId, blockAsStream, null, null, options, null, null,
                             new UploadState { BlockAsStream = blockAsStream, BlockInfo = blockInfo });
                         asyncResults.Add(asyncresult);
 
@@ -143,12 +146,12 @@ namespace Aws.AzureTools
                     // Step 3: Wait for 1 or more put blocks to finish and finish operations
                     if (asyncResults.Count > 0)
                     {
-                        int waitTimeout = options.Timeout.HasValue ? (int)Math.Ceiling(options.Timeout.Value.TotalMilliseconds) : Timeout.Infinite;
+                        int waitTimeout = options.ServerTimeout.HasValue ? (int)Math.Ceiling(options.ServerTimeout.Value.TotalMilliseconds) : Timeout.Infinite;
                         int waitResult = WaitHandle.WaitAny(asyncResults.Select(result => result.AsyncWaitHandle).ToArray(), waitTimeout);
 
                         if (waitResult == WaitHandle.WaitTimeout)
                         {
-                            throw new TimeoutException(String.Format("ParallelUpload Failed with timeout = {0}", options.Timeout.Value));
+                            throw new TimeoutException(String.Format("ParallelUpload Failed with timeout = {0}", options.ServerTimeout.Value));
                         }
 
                         // Optimize away any other completed operations
@@ -185,7 +188,7 @@ namespace Aws.AzureTools
                 blobRef.Properties.ContentMD5 = blobHash;
 
                 List<string> blockList = blockInfoList.OrderBy(b => b.OrderPosition).Select(b => b.BlockId).ToList();
-                blobRef.PutBlockList(blockList, options);
+                blobRef.PutBlockList(blockList, options: options);
             }
         }
 

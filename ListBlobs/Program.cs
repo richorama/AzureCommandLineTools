@@ -18,7 +18,7 @@
 using System;
 using System.Diagnostics;
 using Aws.AzureTools;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace ListBlobs
 {
@@ -35,11 +35,11 @@ namespace ListBlobs
                 BlobHelper blobHelper = new BlobHelper();
                 foreach (IListBlobItem blob in blobHelper.ListBlobs(containerName))
                 {
-                    CloudBlob cloudBlob = blob as CloudBlob;
+                    ICloudBlob cloudBlob = blob as ICloudBlob;
 
                     if (cloudBlob != null)
                     {
-                        Console.WriteLine(String.Format("{0} {1}", BlobHelper.Display(blob.Uri), cloudBlob.Properties.LastModifiedUtc));
+                        Console.WriteLine(String.Format("{0} {1}", BlobHelper.Display(blob.Uri), cloudBlob.Properties.LastModified));
                     }
                     else
                     {
@@ -55,11 +55,11 @@ namespace ListBlobs
                 {
                     foreach (IListBlobItem blob in container.ListBlobs())
                     {
-                        CloudBlob cloudBlob = blob as CloudBlob;
+                        ICloudBlob cloudBlob = blob as ICloudBlob;
 
                         if (cloudBlob != null)
                         {
-                            Console.WriteLine(String.Format("{0} {1}", BlobHelper.Display(blob.Uri), cloudBlob.Properties.LastModifiedUtc));
+                            Console.WriteLine(String.Format("{0} {1}", BlobHelper.Display(blob.Uri), cloudBlob.Properties.LastModified));
                         }
                         else
                         {

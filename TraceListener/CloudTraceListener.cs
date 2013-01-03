@@ -46,6 +46,7 @@ namespace Microsoft.ServiceBus.Samples
             this.writeMutex = new object();
 
             //Construct a Service Bus URI
+            
             Uri uri = ServiceBusEnvironment.CreateServiceUri("sb", serviceNamespace, servicePath);
 
             //Create a Behavior for the Credentials

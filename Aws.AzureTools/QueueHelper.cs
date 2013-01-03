@@ -18,7 +18,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace Aws.AzureTools
 {
@@ -33,8 +35,8 @@ namespace Aws.AzureTools
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
             cloudQueueClient = cloudStorageAccount.CreateCloudQueueClient();
 
-            cloudQueueClient.Timeout = Settings.Timeout();
-            cloudQueueClient.RetryPolicy = RetryPolicies.Retry(Settings.RetryCount(), TimeSpan.FromSeconds(3));
+            cloudQueueClient.ServerTimeout = Settings.Timeout();
+            cloudQueueClient.RetryPolicy = new LinearRetry( TimeSpan.FromSeconds(3), Settings.RetryCount() );
         }
 
         public IEnumerable<CloudQueue> ListQueues()

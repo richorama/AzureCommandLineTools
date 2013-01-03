@@ -20,7 +20,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
+using System.Text;
 
 namespace Aws.AzureTools
 {
@@ -35,8 +38,8 @@ namespace Aws.AzureTools
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
             cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
 
-            cloudBlobClient.Timeout = Settings.Timeout();
-            cloudBlobClient.RetryPolicy = RetryPolicies.Retry(Settings.RetryCount(), TimeSpan.FromSeconds(3));
+            cloudBlobClient.ServerTimeout = Settings.Timeout();
+            cloudBlobClient.RetryPolicy = new LinearRetry(TimeSpan.FromSeconds(3), Settings.RetryCount());
         }
 
         public IEnumerable<CloudBlobContainer> ListContainers()
@@ -54,17 +57,19 @@ namespace Aws.AzureTools
         public void GetBlob(string containerName, string blobName, string filename)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-            CloudBlob blob = container.GetBlobReference(blobName);
-
-            blob.DownloadToFile(filename);
+            ICloudBlob blob = container.GetBlobReferenceFromServer(blobName);
+            using (var fs = File.Create(filename))
+            {
+                blob.DownloadToStream(fs);
+            }
         }
 
         public void TouchBlob(string containerName, string blobName)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-            CloudBlob blob = container.GetBlobReference(blobName);
-
-            blob.FetchAttributes();
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+            blob.UploadFromStream(new MemoryStream(Encoding.UTF8.GetBytes("")));
+            //blob.FetchAttributes();
             blob.SetProperties();
         }
 
@@ -73,60 +78,65 @@ namespace Aws.AzureTools
             CloudBlobContainer container1 = cloudBlobClient.GetContainerReference(containerName1);
             CloudBlobContainer container2 = cloudBlobClient.GetContainerReference(containerName2);
 
-            CloudBlob blob1 = container1.GetBlobReference(blobName1);
-            CloudBlob blob2 = container1.GetBlobReference(blobName2);
+            CloudBlockBlob blob1 = container1.GetBlockBlobReference(blobName1);
+            CloudBlockBlob blob2 = container2.GetBlockBlobReference(blobName2);
 
-            blob2.CopyFromBlob(blob1);
+            blob2.StartCopyFromBlob(blob1.Uri);
+            /// TODO, add wiat logic to check the Copy State and then return
         }
 
         public void DeleteBlob(string containerName, string blobName)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-            CloudBlob blob = container.GetBlobReference(blobName);
+            ICloudBlob blob = container.GetBlobReferenceFromServer(blobName);
 
             blob.Delete();
         }
 
         public void PutBlob(string filename, string containerName, string blobName)
         {
+            if (!File.Exists(filename))
+            {
+                throw new ArgumentException("The file to upload must be an existing file", "filename");
+            }
 
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-
-            container.CreateIfNotExist();
+            container.CreateIfNotExists();
 
             Trace.TraceInformation("UploadingBlob..");
 
-            CloudBlob blob = container.GetBlobReference(blobName);
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
 
             blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
-
-            blob.UploadFile(filename);
+            using(var fs = File.OpenRead(filename))
+            {
+                blob.UploadFromStream(fs);
+            }
             Trace.TraceInformation("Done");
         }
 
         public void PutBlob(string filename, string blobName)
         {
-            CloudBlob blob = cloudBlobClient.GetBlobReference(blobName);
+            var containerName = blobName.Substring(0, blobName.IndexOf("/"));
+            var realBlobName = blobName.Substring(blobName.IndexOf("/") + 1);
 
-            blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
-
-            blob.UploadFile(filename);
-            Trace.TraceInformation("Done");
+            this.PutBlob(filename, containerName, realBlobName);
         }
 
 
         public void PutLargeBlob(string filename, string containerName, string blobName)
         {
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
-            container.CreateIfNotExist();
+            container.CreateIfNotExists();
 
-            cloudBlobClient.WriteBlockSizeInBytes = Settings.WriteBlockSizeInBytes();
+            cloudBlobClient.SingleBlobUploadThresholdInBytes = Settings.WriteBlockSizeInBytes();
 
             Trace.TraceInformation("UploadingBlob..");
 
             CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
             blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
 
+            
             blob.ParallelUpload(filename, null);
 
             Trace.TraceInformation("Done");
@@ -134,16 +144,9 @@ namespace Aws.AzureTools
 
         public void PutLargeBlob(string filename, string blobName)
         {
-            cloudBlobClient.WriteBlockSizeInBytes = Settings.WriteBlockSizeInBytes();
-
-            Trace.TraceInformation("UploadingBlob..");
-
-            CloudBlockBlob blob = cloudBlobClient.GetBlockBlobReference(blobName);
-            blob.Properties.ContentType = MimeTypeHelper.GetMimeType(filename);
-
-            blob.ParallelUpload(filename, null);
-            
-            Trace.TraceInformation("Done");
+            var containerName = blobName.Substring(0, blobName.IndexOf("/"));
+            var realBlobName = blobName.Substring(blobName.IndexOf("/") + 1);
+            this.PutLargeBlob(filename, containerName, realBlobName);
         }
 
         
