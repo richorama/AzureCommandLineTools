@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PutBlob", "PutBlob\PutBlob.csproj", "{EF68C839-3F7E-4C26-B4DC-E705FF4B6F7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetBlob", "GetBlob\GetBlob.csproj", "{CF87F2E5-9487-41A4-A3B2-D2A4D2A8514A}"
@@ -42,6 +42,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PutLargeBlob", "PutLargeBlob\PutLargeBlob.csproj", "{B3CBBCD8-673F-41DC-A231-DBED3B4E1A0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceProcess", "TraceProcess\TraceProcess.csproj", "{19C30A72-05A0-4B4E-9E94-7942A97801A0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{86776168-8235-45CE-A4E2-4344E5DCE939}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

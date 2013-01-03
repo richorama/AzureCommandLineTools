@@ -18,7 +18,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
+using System.Linq;
 
 namespace Aws.AzureTools
 {
@@ -33,25 +36,25 @@ namespace Aws.AzureTools
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
             cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
 
-            cloudTableClient.Timeout = Settings.Timeout();
-            cloudTableClient.RetryPolicy = RetryPolicies.Retry(Settings.RetryCount(), TimeSpan.FromSeconds(3));
+            cloudTableClient.ServerTimeout = Settings.Timeout();
+            cloudTableClient.RetryPolicy = new LinearRetry(TimeSpan.FromSeconds(3), Settings.RetryCount());
         }
 
         public IEnumerable<String> ListTables()
         {
-            return cloudTableClient.ListTables();
+            return cloudTableClient.ListTables().Select( ct => ct.Name );
         }
 
 
         public void DeleteTable(string tableName)
         {
-            this.cloudTableClient.DeleteTableIfExist(tableName);
+            this.cloudTableClient.GetTableReference(tableName).DeleteIfExists();
         }
 
         public void CreateTable(string tableName)
         {
 
-            this.cloudTableClient.CreateTableIfNotExist(tableName);
+            this.cloudTableClient.GetTableReference(tableName).CreateIfNotExists();
         }
 
     }
